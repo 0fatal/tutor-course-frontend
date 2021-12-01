@@ -39,6 +39,7 @@ export default {
     async loadTeacherInfo () {
       const {data} = await ApiGet('/teacher/')
       if (data.code === 0) {
+        this.$store.dispatch('saveTeacherInfo', data.data)
         this.teacherInfo = data.data
       }
     },
@@ -47,6 +48,8 @@ export default {
       const {data} = await ApiPatch('/teacher/', {
         name: this.teacherInfo.name
       })
+
+
       if (data.code === 0) {
         this.$message.success('保存成功')
       } else {

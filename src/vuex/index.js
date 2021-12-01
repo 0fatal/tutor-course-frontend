@@ -4,6 +4,7 @@ import routerData from './modules/routerData'
 import role from './modules/role'
 import layout from './modules/layout/index'
 import Cookies from 'js-cookie'
+import teacher from './modules/teacher'
 
 Vue.use(Vuex)
 
@@ -57,7 +58,8 @@ const store = new Vuex.Store({
   modules: {
     routerData,
     role,
-    layout
+    layout,
+    teacher
   }
 })
 

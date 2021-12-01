@@ -65,7 +65,7 @@
 </template>
 <script>
 // import Cookies from 'js-cookie'
-import {ApiPost} from '../../api/api'
+import {ApiGet, ApiPost} from '../../api/api'
 
 export default {
   data () {
@@ -79,7 +79,6 @@ export default {
   },
   methods: {
     async submitForm () {
-
       const {staffId, password} = this.loginForm
       if (staffId === '' || password === '') {
         this.$message({
@@ -98,12 +97,15 @@ export default {
 
         if (code !== 0) throw new Error(msg)
         // await this.$store.dispatch('setToken', res.data.data.token)
+        const {data} = await ApiGet('/teacher/')
+        if (data.code === 0) {
+          this.$store.dispatch('saveTeacherInfo', data.data)
+        }
         await this.$store.dispatch('setInfo', {role: 'teacher'})
         await this.$router.push({path: '/'})
       } catch (e) {
         this.$message.error(e.message)
       }
-
     }
   }
 }

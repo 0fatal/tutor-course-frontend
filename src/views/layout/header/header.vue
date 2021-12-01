@@ -14,7 +14,7 @@
         <li>
           <el-dropdown @command="handleCommand">
                   <span class="el-dropdown-link">
-                    夏洛克丶旭<i class="el-icon-arrow-down el-icon--right"></i>
+                    {{ $store.getters.teacherInfo.name}}<i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="info">{{ $t('userDropdownMenu.basicInfor') }}</el-dropdown-item>
