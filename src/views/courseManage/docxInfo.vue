@@ -4,9 +4,6 @@
       <el-upload
         ref="upload"
         action="http://127.0.0.1:7002/template/parse"
-        :on-remove="handleRemove"
-        :before-remove="beforeRemove"
-        :on-exceed="handleExceed"
         :file-list="templateList"
         :on-success="handleUploadSuccess"
         :on-error="handleUploadError"
@@ -38,8 +35,8 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleProduce(scope.row.filename, scope.row.fid)"
-            >生成文档
+              @click="handleInstance(scope.row.filename, scope.row.fid)"
+            >查看实例
             </el-button
             >
             <el-button
@@ -68,6 +65,8 @@
 </template>
 
 <script>
+import {ApiGet} from '../../api/api'
+
 export default {
   name: 'courseInfo',
   data () {
@@ -90,7 +89,6 @@ export default {
             })
 
             await loadCourses()
-
           } catch (e) {
             this.$error(e.message)
           }
@@ -113,13 +111,16 @@ export default {
     },
     async uploadTemplate () {
     },
-    async loadCourses () {
+    async loadTemplate (courseId) {
       const {
         data: {data}
-      } = await this.$request.getTemplateList()
+      } = await ApiGet('/template', {
+        params: {
+          course_id: courseId
+        }
+      })
       this.courses = data
       this.$forceUpdate()
-
     },
 
     handleDownload (filename, fid) {
@@ -150,13 +151,19 @@ export default {
       return fmt
     },
 
-    handleProduce (filename, fid) {
-      this.$router.push(`/courseManage/createDocx?fid=${fid}`)
+    handleInstance (templateName, templateId) {
+      this.$router.push({
+        name: 'course-template-instance',
+        query: {
+          templateId
+        }
+      })
     }
   },
   computed: {},
   created () {
-    this.loadCourses()
+    const courseId = this.$route.query.courseId
+    this.loadTemplate(courseId)
   }
 }
 </script>
