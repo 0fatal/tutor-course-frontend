@@ -8,8 +8,8 @@
       </div>
       <div class="loginBox">
         <div class="loginCon">
-          <p class="title">创新实践个人空间</p>
-          <p class="title">前台: vue + element-ui</p>
+          <p class="title">教学材料生成系统</p>
+          <p class="title"></p>
           <el-card shadow="always" class="login-module" v-if="smdl">
             <div slot="header" class="clearfix formTitlt">
               <span>密码登录</span>
