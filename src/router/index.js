@@ -179,7 +179,7 @@ const NotFound = () => import('@/views/page404')
 const routes = [
   {
     path: '/',
-    redirect: '/index'
+    redirect: '/info/teacher'
   },
   {
     path: '/login',
@@ -207,8 +207,8 @@ const routes = [
         component: () => import('@/views/courseManage/docxInfo')
       },
       {
-        path: '/course/template/instance/new',
-        name: 'template-instance-new',
+        path: '/course/template/instance/edit',
+        name: 'template-instance-edit',
         component: () => import('@/views/courseManage/createDocx')
       },
       {
@@ -220,8 +220,15 @@ const routes = [
         path: '/course',
         name: 'course',
         component: () => import('@/views/courseManage/courseInfo')
+      },
+      {
+        path: '/excel/template',
+        name: 'excel-template'
+      },
+      {
+        path: '/excel/template/instance',
+        name: 'excel-template-instance'
       }
-
     ]
   },
   {
