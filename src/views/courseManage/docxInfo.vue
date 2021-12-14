@@ -41,6 +41,11 @@
             >
             <el-button
               size="mini"
+              @click="handleNewInstance(scope.row.filename, scope.row.fid)"
+            >创建新实例
+            </el-button>
+            <el-button
+              size="mini"
               @click="handleDownload(scope.row.filename, scope.row.fid)"
             >下载文档
             </el-button
@@ -88,7 +93,7 @@ export default {
               message: `删除 [${filename}] 成功`
             })
 
-            await loadCourses()
+            await this.loadTemplate()
           } catch (e) {
             this.$error(e.message)
           }
@@ -104,6 +109,16 @@ export default {
     },
     handleUploadError (err, file, fileList) {
       console.log(err)
+    },
+
+    handleNewInstance (templateName, templateId) {
+      console.log(templateName, templateId)
+      this.$router.push({
+        name: 'template-instance-edit',
+        query: {
+          templateId
+        }
+      })
     },
 
     handleUploadSuccess (response, file, fileList) {
@@ -144,7 +159,7 @@ export default {
         if (ret) {
           fmt = fmt.replace(
             ret[1],
-            ret[1].length == 1 ? opt[k] : opt[k].padStart(ret[1].length, '0')
+            ret[1].length === 1 ? opt[k] : opt[k].padStart(ret[1].length, '0')
           )
         }
       }

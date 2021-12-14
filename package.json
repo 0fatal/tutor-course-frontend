@@ -1,7 +1,7 @@
 {
   "name": "vue-xuadmin",
   "version": "1.2.8",
-  "description": "vue + element-ui 无限级菜单 权限管理 后台模板 ",
+  "description": "教学材料生成系统",
   "author": "NiRongxu",
   "email": "595485548@qq.com",
   "private": true,

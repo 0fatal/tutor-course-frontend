@@ -26,7 +26,6 @@
         <li class="icon"><img :src="avatar"/></li>
       </ul>
     </el-header>
-    <tabNav></tabNav>
     <user-info v-if="dialogInfoVisible" :title="title" :dialogVisible="dialogInfoVisible" :userId="userId" @successCallback="successCallback"/>
     <edit-password v-if="dialogPassVisible" :dialogVisible="dialogPassVisible" @editPwdCallback="editPwdCallback"/>
   </div>
@@ -34,13 +33,12 @@
 
 <script>
 import langSelect from '../../../components/lang/langSelect'
-import tabNav from './tabNav'
 import UserInfo from '../../../components/userForm/userInfo'
 import EditPassword from '../../../components/userForm/editPassword'
 
 export default {
   name: 'Header',
-  components: {EditPassword, tabNav, langSelect, UserInfo},
+  components: {EditPassword, langSelect, UserInfo},
   data () {
     return {
       isfullScreen: true,
