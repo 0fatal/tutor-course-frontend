@@ -2,7 +2,7 @@
   <div>
     <el-card>
       <template slot="header">
-        <el-button size="mini" type="warning" @click="() => uploadDialogShow = true">创建新实例</el-button>
+        <h1>课程列表</h1>
       </template>
       <el-table border :data="courses" style="width: 100%">
         <el-table-column type="index"></el-table-column>
