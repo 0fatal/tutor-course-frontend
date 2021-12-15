@@ -121,10 +121,10 @@ export default {
 
     async handleDownload (templateName, instanceId) {
       // this.$request.getTemplate(fid, filename)
-      const res =  await ApiGet('/instance/download/' + instanceId,{
-      responseType: 'blob'
-    })
-    fileDownload(res.data,'生成结果.docx')
+      const res = await ApiGet('/instance/download/' + instanceId, {
+        responseType: 'blob'
+      })
+      fileDownload(res.data, '生成结果.docx')
     },
 
     dateFormat (fmt, date) {

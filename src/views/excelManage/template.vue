@@ -3,10 +3,8 @@
     <el-dialog title="上传模板" :visible.sync="uploadDialogShow">
       <el-upload
         ref="upload"
-        action="http://127.0.0.1:7002/template/parse"
+        :http-request="uploadFiles"
         :file-list="templateList"
-        :on-success="handleUploadSuccess"
-        :on-error="handleUploadError"
         :auto-upload="false"
         :multiple="false"
         :limit="1"
@@ -70,7 +68,7 @@
 </template>
 
 <script>
-import {ApiGet} from '../../api/api'
+import {ApiGet, ApiPost} from '../../api/api'
 
 export default {
   name: 'courseInfo',
@@ -82,6 +80,12 @@ export default {
     }
   },
   methods: {
+    async uploadFiles (e) {
+      console.log(e)
+      const fd = new FormData()
+      fd.append('file', e.file)
+      await ApiPost('/template/parse?type=1', fd)
+    },
     async handleDelete (filename, fid) {
       try {
         const confirm = await this.$confirm(`确定删除 [${filename}]？`)
