@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="上传模板" :visible.sync="uploadDialogShow">
+    <el-dialog title="上传模板"  :visible.sync="uploadDialogShow">
       <el-upload
         ref="upload"
         :http-request="uploadFiles"
@@ -11,9 +11,24 @@
       >
         <el-button size="small" type="primary" slot="trigger">选取模板</el-button>
         <el-button size="small" type="success" @click="submitUpload">上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传docx文件</div>
+      </el-upload>
+    </el-dialog>
+    <el-dialog title="上传成绩册" :visible.sync="uploadExcelDialogShow">
+      <el-upload
+        ref="upload"
+        :http-request="uploadExcelFiles"
+        :file-list="excelList"
+        :auto-upload="false"
+        :multiple="false"
+        :limit="1"
+      >
+        <el-button size="small" type="primary" slot="trigger">选择成绩册</el-button>
+        <el-button size="small" type="success" @click="submitUpload">上传</el-button>
         <div slot="tip" class="el-upload__tip">只能上传excel文件</div>
       </el-upload>
     </el-dialog>
+
     <el-card>
       <template slot="header">
         <el-button size="mini" type="warning" @click="() => uploadDialogShow = true">上传模板</el-button>
@@ -40,7 +55,7 @@
             <el-button
               size="mini"
               @click="handleNewInstance(scope.row.filename, scope.row.fid)"
-            >创建新实例
+            >解析成绩册
             </el-button>
             <el-button
               size="mini"
@@ -76,7 +91,10 @@ export default {
     return {
       courses: [],
       templateList: [],
-      uploadDialogShow: false
+      excelList: [],
+      uploadDialogShow: false,
+      uploadExcelDialogShow: false,
+      templateId: ''
     }
   },
   methods: {
@@ -111,18 +129,22 @@ export default {
     handleTemplateChange () {
 
     },
+
+    async uploadExcelFiles (e) {
+      console.log(e)
+      const fd = new FormData()
+      fd.append('file', e.file)
+      await ApiPost(`/instance/new?template_id=${this.templateId}`, fd)
+    },
+
     handleUploadError (err, file, fileList) {
       console.log(err)
     },
 
     handleNewInstance (templateName, templateId) {
-      console.log(templateName, templateId)
-      this.$router.push({
-        name: 'template-instance-edit',
-        query: {
-          templateId
-        }
-      })
+      console.log(templateId, '111')
+      this.templateId = templateId
+      this.uploadExcelDialogShow = true
     },
 
     handleUploadSuccess (response, file, fileList) {
