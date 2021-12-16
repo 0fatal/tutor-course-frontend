@@ -11,6 +11,9 @@
         label-width="120px"
         style="width: 100%"
       >
+        <el-form-item label="实例名称">
+          <el-input v-model="instanceName"/>
+        </el-form-item>
         <el-form-item
           v-for="(k, index) in Object.keys(tags)"
           :key="index"
@@ -78,7 +81,8 @@ export default {
       templateId: '',
       instanceId: '',
       tags: {},
-      courseId: {}
+      courseId: {},
+      instanceName: ''
     }
   },
   async created () {
@@ -109,6 +113,7 @@ export default {
         if (this.$route.query.instanceId) {
           await ApiPatch('/instance', {
             templateId: this.templateId,
+            name: this.instanceName,
             id: this.instanceId,
             tags: this.tags
           })
@@ -118,6 +123,7 @@ export default {
           await ApiPost('/instance/new', {
             type: 0,
             templateId: this.templateId,
+            name: this.instanceName,
             staffId: this.$store.getters.teacherInfo.staffId,
             tags: this.tags,
             courseId: this.courseId
@@ -133,6 +139,7 @@ export default {
 
     async loadInstance (instanceId) {
       const {data: {data}} = await ApiGet(`/instance/${instanceId}`)
+      this.instanceName = data.name
       this.tags = JSON.parse(data.tags)
     },
 
