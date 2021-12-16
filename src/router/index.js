@@ -228,7 +228,8 @@ const routes = [
       },
       {
         path: '/excel/template/instance',
-        name: 'excel-template-instance'
+        name: 'excel-template-instance',
+        component: () => import('@/views/excelManage/instance')
       }
     ]
   },
