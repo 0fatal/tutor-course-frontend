@@ -38,7 +38,6 @@ const cn = {
     ordinary: '普通用户'
   },
   userDropdownMenu: {
-    basicInfor: '基本资料',
     changePassword: '修改密码',
     logout: '退出'
   },
