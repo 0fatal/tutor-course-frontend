@@ -7,10 +7,16 @@
       </template>
       <el-table border :data="instanceList" style="width: 100%">
         <el-table-column type="index"></el-table-column>
-        <el-table-column prop="id" width="300" label="成绩册编号">
+        <el-table-column prop="templateName" label="模板文件名">
+          <template slot-scope="scope">
+            <span>{{scope.row.template.templateName}}</span>
+          </template>
         </el-table-column>
-        <el-table-column prop="templateName" label="模板文件名"></el-table-column>
-        <el-table-column prop="courseName" label="课程名"></el-table-column>
+        <el-table-column prop="courseName" label="课程名">
+          <template slot-scope="scope">
+            <span>{{scope.row.course.courseName}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="实例名称"></el-table-column>
         <el-table-column prop="updateAt" label="更新日期" width="150">
           <template slot-scope="scope">
@@ -118,7 +124,7 @@ export default {
     },
 
     async handleDownload (templateName, instanceId) {
-      // this.$request.getTemplate(fid, filename)
+      // this.$request.getTemplate(tid, templateName)
       const res = await ApiGet('/instance/download/' + instanceId, {
         responseType: 'blob'
       })
