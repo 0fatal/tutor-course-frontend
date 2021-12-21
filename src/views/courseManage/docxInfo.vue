@@ -16,7 +16,8 @@
     </el-dialog>
     <el-card>
       <template slot="header">
-        <el-button size="mini" type="warning" @click="() => uploadDialogShow = true">上传模板</el-button>
+        <el-button size="mini" type="warning" @click="() => uploadDialogShow = true" v-if="$isAdmin()">上传模板</el-button>
+        <h1 v-else>模板列表</h1>
       </template>
       <el-table border :data="courses" style="width: 100%">
         <el-table-column type="index"></el-table-column>
@@ -49,10 +50,10 @@
             <el-button
               size="mini"
               type="danger"
+              v-if="$isAdmin()"
               @click="handleDelete(scope.row.templateName, scope.row.tid)"
             >删除
-            </el-button
-            >
+            </el-button>
           </template>
         </el-table-column>
       </el-table>

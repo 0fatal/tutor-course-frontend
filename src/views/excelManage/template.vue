@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-dialog title="上传模板"  :visible.sync="uploadDialogShow">
-
       <el-upload
         ref="upload"
         :http-request="uploadFiles"
@@ -16,20 +15,8 @@
       </el-upload>
 
     </el-dialog>
+    <el-dialog title="解析成绩册"  :visible.sync="uploadExcelDialogShow">
       <el-form label-position="left" label-width="150px">
-        <el-form-item label="请绑定课程：">
-          <el-select v-model="targetCopyCourseId" placeholder="请选择" >
-            <el-option
-              v-for="item in courses"
-              :key="item.courseId"
-              :label="item.courseName"
-              :value="item.courseId"
-            >
-              <span style="float: left">{{ item.courseName }}</span>
-              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.courseNum }}</span>
-            </el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="成绩册：">
           <el-upload
             ref="upload"
@@ -38,7 +25,6 @@
             :auto-upload="false"
             :multiple="false"
             :limit="1"
-            @before-close="beforeExcelDialogClose"
           >
             <el-button size="small" type="primary" slot="trigger">选择成绩册</el-button>
             <div slot="tip" class="el-upload__tip">只能上传excel文件</div>
@@ -56,12 +42,11 @@
 
     <el-card>
       <template slot="header">
-        <el-button size="mini" type="warning" @click="() => uploadDialogShow = true">上传模板</el-button>
+        <el-button size="mini" type="warning" @click="() => uploadDialogShow = true" v-if="$isAdmin()">上传模板</el-button>
+        <h1 v-else>成绩模板列表</h1>
       </template>
       <el-table border :data="excelList" style="width: 100%">
         <el-table-column type="index"></el-table-column>
-        <el-table-column sortable prop="tid" width="320" label="模板编号">
-        </el-table-column>
         <el-table-column prop="templateName" label="模板文件名"></el-table-column>
         <el-table-column prop="createAt" label="创建日期" width="150">
           <template slot-scope="scope">
@@ -92,6 +77,7 @@
               size="mini"
               type="danger"
               @click="handleDelete(scope.row.templateName, scope.row.tid)"
+              v-if="$isAdmin()"
             >删除
             </el-button
             >
@@ -111,26 +97,26 @@
 import {ApiGet, ApiPost} from '../../api/api'
 
 export default {
-  name: 'courseInfo',
   data () {
     return {
-      courses: [],
       templateList: [],
       excelList: [],
       excelFileList: [],
       uploadDialogShow: false,
       uploadExcelDialogShow: false,
-      templateId: '',
-      targetCopyCourseId: ''
+      templateId: ''
+    }
+  },
+
+  watch: {
+    uploadExcelDialogShow (newVal, oldVal) {
+      if (!newVal) {
+        this.excelFileList = []
+        this.$refs.uploadExceL.clearFiles()
+      }
     }
   },
   methods: {
-    async loadCourse () {
-      const {data: {data}} = await ApiGet('/course')
-      this.courses = data
-    },
-
-
     async uploadFiles (e) {
       const fd = new FormData()
       fd.append('file', e.file)
@@ -168,15 +154,14 @@ export default {
     },
 
 
-    async beforeExcelDialogClose () {
-      this.excelFileList = []
-      this.$refs.uploadExcel.clearFiles()
-    },
-
     async uploadExcelFiles (e) {
       const fd = new FormData()
       fd.append('file', e.file)
-      await ApiPost(`/instance/new?template_id=${this.templateId}&course_id=${this.targetCopyCourseId}`, fd)
+      await ApiPost(`/instance/new?template_id=${this.templateId}`, fd)
+      this.$message({
+        message: '上传成功',
+        type: 'success'
+      })
       this.uploadExcelDialogShow = false
       await this.loadTemplate()
     },
@@ -195,14 +180,10 @@ export default {
     },
     async uploadTemplate () {
     },
-    async loadTemplate (courseId) {
+    async loadTemplate () {
       const {
         data: {data}
-      } = await ApiGet('/template/excel', {
-        params: {
-          course_id: courseId
-        }
-      })
+      } = await ApiGet('/template/excel')
       this.excelList = data
       this.$forceUpdate()
     },
@@ -246,9 +227,7 @@ export default {
   },
   computed: {},
   created () {
-    const courseId = this.$route.query.courseId
-    this.loadTemplate(courseId)
-    this.loadCourse()
+    this.loadTemplate()
   }
 }
 </script>

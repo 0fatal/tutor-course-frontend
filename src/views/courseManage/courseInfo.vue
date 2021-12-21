@@ -27,6 +27,7 @@
         <el-table-column label="开课状态">
           <template slot-scope="scope">
             <el-switch
+              v-if="$isAdmin()"
               v-model="scope.row.courseState"
               active-text="开课"
               :active-value="1"
@@ -34,6 +35,7 @@
               @change="changeCourseState($event,scope.row.courseId)"
               inactive-text="停课">
             </el-switch>
+            <span v-else>{{scope.row.courseState === 1?'开课':'停课'}}</span>
           </template>
         </el-table-column>
         <el-table-column label="操作">
