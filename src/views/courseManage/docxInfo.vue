@@ -20,9 +20,7 @@
       </template>
       <el-table border :data="courses" style="width: 100%">
         <el-table-column type="index"></el-table-column>
-        <el-table-column sortable prop="fid" width="320" label="模板编号">
-        </el-table-column>
-        <el-table-column prop="filename" label="模板文件名"></el-table-column>
+        <el-table-column prop="templateName" label="模板文件名"></el-table-column>
         <el-table-column prop="createAt" label="创建日期" width="150">
           <template slot-scope="scope">
             {{ dateFormat('YYYY-mm-dd HH:MM', new Date(scope.row.createAt)) }}
@@ -33,25 +31,25 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleInstance(scope.row.filename, scope.row.fid)"
+              @click="handleInstance(scope.row.templateName, scope.row.tid)"
             >查看实例
             </el-button
             >
             <el-button
               size="mini"
-              @click="handleNewInstance(scope.row.filename, scope.row.fid)"
+              @click="handleNewInstance(scope.row.templateName, scope.row.tid)"
             >创建新实例
             </el-button>
             <el-button
               size="mini"
-              @click="handleDownload(scope.row.filename, scope.row.fid)"
+              @click="handleDownload(scope.row.templateName, scope.row.tid)"
             >下载文档
             </el-button
             >
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.row.filename, scope.row.fid)"
+              @click="handleDelete(scope.row.templateName, scope.row.tid)"
             >删除
             </el-button
             >
@@ -131,14 +129,10 @@ export default {
     },
     async uploadTemplate () {
     },
-    async loadTemplate (courseId) {
+    async loadTemplate () {
       const {
         data: {data}
-      } = await ApiGet('/template', {
-        params: {
-          course_id: courseId
-        }
-      })
+      } = await ApiGet('/template')
       this.courses = data
       this.$forceUpdate()
     },
@@ -182,8 +176,7 @@ export default {
   },
   computed: {},
   created () {
-    const courseId = this.$route.query.courseId
-    this.loadTemplate(courseId)
+    this.loadTemplate()
   }
 }
 </script>
