@@ -15,7 +15,7 @@
           <el-input v-model="instanceName"/>
         </el-form-item>
         <el-form-item label="选择课程">
-          <el-select v-model="courseId" placeholder="请选择" @change="handleCourseChange" :disabled="!!$route.query.instanceId">
+          <el-select v-model="courseId" placeholder="请选择" :disabled="!!$route.query.instanceId">
             <el-option
               v-for="item in courses"
               :key="item.courseId"
@@ -27,7 +27,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择成绩册">
-          <el-select v-model="excelId" placeholder="请选择" @change="handleExcelChange" clearable>
+          <el-select v-model="excelId" placeholder="请选择" clearable>
             <el-option
               v-for="item in excels"
               :key="item.id"
@@ -118,16 +118,15 @@ export default {
     templateId && await this.loadTemplate(templateId, this.courseId)
     instanceId && await this.loadInstance(instanceId)
   },
+
+  watch: {
+    async courseId (newVal, oldVal) {
+      await this.loadTemplate(this.templateId, newVal, true)
+    }
+  },
   methods: {
-    async handleCourseChange (courseId) {
-      console.log(courseId)
-      await this.loadTemplate(this.templateId, courseId)
-    },
 
-    async handleExcelChange (excelId) {
-
-    },
-    async loadTemplate (templateId, courseId) {
+    async loadTemplate (templateId, courseId, optionFill = false) {
       const {
         data: {data}
       } = await ApiGet('/template/tags', {
@@ -137,7 +136,22 @@ export default {
         }
       })
 
-      this.tags = data
+
+      if (optionFill) {
+        const tags = this.tags
+        this.tags = {
+          ...tags,
+          semester: data.semester,
+          beginSchoolYear: data.beginSchoolYear,
+          endSchoolYear: data.endSchoolYear,
+          courseName: data.courseName,
+          courseCode: data.courseCode,
+          credit: data.credit,
+          nature: data.nature
+        }
+      } else {
+        this.tags = data
+      }
     },
 
     async saveInstance () {
@@ -160,6 +174,7 @@ export default {
             name: this.instanceName,
             staffId: this.$store.getters.teacherInfo.staffId,
             tags: this.tags,
+            excelId: this.excelId === '' ? null : this.excelId,
             courseId: this.courseId
           })
           this.$message.success('生成成功')
