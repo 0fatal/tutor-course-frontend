@@ -1,5 +1,34 @@
 <template>
   <div>
+    <el-dialog
+      title="复制模板"
+      :visible.sync="copyDialogVisible"
+      width="30%"
+    >
+      <el-form label-position="top">
+        <el-form-item label="新实例名称：">
+          <el-input v-model="copyNewInstanceName" placeholder="请输入实例名称"></el-input>
+        </el-form-item>
+        <el-form-item label="请选择复制到哪个课程：">
+          <el-select v-model="courseId" placeholder="请选择" @change="handleCourseChange">
+            <el-option
+              v-for="item in courses.filter(({courseId}) => courseId !== selectCopyCourseId)"
+              :key="item.courseId"
+              :label="item.courseName"
+              v-model="targetCopyCourseId">
+              <span style="float: left">{{ item.courseName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.courseNum }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <hr>
+        <br>
+        <div>
+          <el-button @click="handleCopy">复制</el-button>
+          <el-button @click="() =>copyDialogVisible=false" type="primary">取消</el-button>
+        </div>
+      </el-form>
+    </el-dialog>
     <el-card>
       <template slot="header">
         <h1 v-if="!$route.query.templateId">实例列表</h1>
@@ -39,7 +68,7 @@
             </el-button>
             <el-button
               size="mini"
-              @click="handleCopy(scope.row.templateName, scope.row.id)"
+              @click="()=>{selectCopyCourseId = scope.row.course.courseId,copyDialogVisible = true}"
             >复制
             </el-button>
             <el-button
@@ -75,10 +104,19 @@ export default {
   name: 'courseInfo',
   data () {
     return {
-      instanceList: []
+      instanceList: [],
+      copyDialogVisible: false,
+      courses: [],
+      selectCopyCourseId: '',
+      copyNewInstanceName: '',
+      targetCopyCourseId: ''
     }
   },
   methods: {
+    async loadCourse () {
+      const {data: {data}} = await ApiGet('/course')
+      this.courses = data
+    },
     async handleDownloadExcel (excelId, excelName) {
       // this.$request.getTemplate(fid, filename)
       const res = await ApiGet('/instance/download/' + excelId, {
@@ -108,9 +146,19 @@ export default {
       }
     },
 
-    async handleCopy (templateName, instanceId) {
+    async handleCopy () {
+      this.copyNewInstanceName = this.copyNewInstanceName.trim()
+      if (!this.copyNewInstanceName) {
+        await this.$confirm('请输入新实例名称')
+        return
+      }
+      const instanceId = this.instanceList[0].id
       try {
-        await ApiPost('/instance/copy/' + instanceId)
+        await ApiPost('/instance/copy', {
+          instanceId,
+          name: this.copyNewInstanceName,
+          courseId: this.targetCopyCourseId
+        })
         this.$message.success('复制成功')
         await this.loadInstance()
       } catch (e) {
@@ -188,6 +236,7 @@ export default {
     const courseId = this.$route.query.courseId
     console.log(templateId, courseId)
     this.loadInstance(templateId, courseId)
+    this.loadCourse()
   }
 }
 </script>
