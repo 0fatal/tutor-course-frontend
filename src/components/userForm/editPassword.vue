@@ -1,8 +1,6 @@
 <template>
   <el-dialog title="修改密码" width="700px" :visible.sync="visible" destroy-on-close @close="closeCallback">
-    <div class="card">
-      <p class="title"><i class="fa fa-th-large fa-lg"></i>修改密码</p>
-      <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
+      <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" label-position="left" class="demo-ruleForm">
         <el-form-item label="原密码" prop="oldPassword">
           <el-input type="password" v-model="ruleForm2.oldPassword" autocomplete="off"></el-input>
         </el-form-item>
@@ -17,12 +15,12 @@
           <el-button @click="resetForm('ruleForm2')">重置</el-button>
         </el-form-item>
       </el-form>
-    </div>
   </el-dialog>
 </template>
 
 <script>
-import Cookies from 'js-cookie'
+import {ApiPost} from '../../api/api'
+
 export default {
   name: 'editPassword',
   props: {
@@ -32,11 +30,13 @@ export default {
     }
   },
   data () {
-    var validatePass = (rule, value, callback) => {
+    const validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
       } else if (value.toString().length < 6) {
         callback(new Error('密码长度不能低于6位'))
+      } else if (value.toString().length > 20) {
+        callback(new Error('密码长度不能大于20位'))
       } else {
         if (this.ruleForm2.checkPass !== '') {
           this.$refs.ruleForm2.validateField('checkPass')
@@ -44,11 +44,13 @@ export default {
         callback()
       }
     }
-    var validatePass2 = (rule, value, callback) => {
+    const validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
       } else if (value.toString().length < 6) {
         callback(new Error('密码长度不能低于6位'))
+      } else if (value.toString().length > 20) {
+        callback(new Error('密码长度不能大于20位'))
       } else if (value !== this.ruleForm2.password) {
         callback(new Error('两次输入密码不一致!'))
       } else {
@@ -83,23 +85,23 @@ export default {
       let that = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$request.fetchEditPassword({
+          ApiPost('/teacher/password/change', {
             oldPassword: that.ruleForm2.oldPassword,
-            newPassword: that.ruleForm2.password
+            password: that.ruleForm2.password,
+            checkPass: that.ruleForm2.checkPass
           }).then((res) => {
             that.$message({
               showClose: true,
-              message: res.data.message,
+              message: res.data.msg,
               type: 'success'
             })
             setTimeout(function () {
-              Cookies.remove('access_token')
               location.reload()
-            }, 3000)
+            }, 2000)
           }).catch((err) => {
             that.$message({
               showClose: true,
-              message: err.data.message,
+              message: '发生了错误：' + err.message,
               type: 'error'
             })
           })
