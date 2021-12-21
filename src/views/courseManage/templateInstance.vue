@@ -10,12 +10,12 @@
           <el-input v-model="copyNewInstanceName" placeholder="请输入实例名称"></el-input>
         </el-form-item>
         <el-form-item label="请选择复制到哪个课程：">
-          <el-select v-model="courseId" placeholder="请选择" @change="handleCourseChange">
+          <el-select v-model="targetCopyCourseId" placeholder="请选择">
             <el-option
               v-for="item in courses.filter(({courseId}) => courseId !== selectCopyCourseId)"
               :key="item.courseId"
               :label="item.courseName"
-              v-model="targetCopyCourseId">
+              v-model="item.courseId">
               <span style="float: left">{{ item.courseName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ item.courseNum }}</span>
             </el-option>
@@ -24,7 +24,13 @@
         <hr>
         <br>
         <div>
-          <el-button @click="handleCopy">复制</el-button>
+          <el-popconfirm
+            title="确定要复制吗？"
+            @onConfirm="handleCopy"
+          >
+            <el-button slot="reference">复制</el-button>
+          </el-popconfirm>
+
           <el-button @click="() =>copyDialogVisible=false" type="primary">取消</el-button>
         </div>
       </el-form>
@@ -68,7 +74,7 @@
             </el-button>
             <el-button
               size="mini"
-              @click="()=>{selectCopyCourseId = scope.row.course.courseId,copyDialogVisible = true}"
+              @click="openCopyDialog(scope.row.course.courseId)"
             >复制
             </el-button>
             <el-button
@@ -112,6 +118,19 @@ export default {
       targetCopyCourseId: ''
     }
   },
+
+  watch: {
+    $route (to, from) {
+      console.log(to, from, to.query.length)
+
+      if (Object.keys(to.query).length === 0 && Object.keys(from.query).length > 0) {
+        this.templateId = undefined
+        this.courseId = undefined
+        this.loadInstance()
+        this.loadCourse()
+      }
+    }
+  },
   methods: {
     async loadCourse () {
       const {data: {data}} = await ApiGet('/course')
@@ -137,13 +156,25 @@ export default {
               message: '删除成功'
             })
 
-            await this.loadInstance()
+            await this.loadInstance(this.templateId, this.courseId)
           } catch (e) {
             this.$error(e.message)
           }
         }
       } catch (e) {
       }
+    },
+
+    async openCopyDialog (courseId) {
+      this.selectCopyCourseId = courseId
+      this.copyDialogVisible = true
+      this.$notify({
+        title: '提示',
+        type: 'warning',
+        message: '只能复制到没有绑定教学文档实例的课程，若已绑请先查看并删除对应课程的文档实例',
+        duration: 10000,
+        customClass: 'copy-dialog-info'
+      })
     },
 
     async handleCopy () {
@@ -160,7 +191,11 @@ export default {
           courseId: this.targetCopyCourseId
         })
         this.$message.success('复制成功')
-        await this.loadInstance()
+        this.copyDialogVisible = false
+        this.copyNewInstanceName = ''
+        this.selectCopyCourseId = ''
+        this.targetCopyCourseId = ''
+        await this.loadInstance(this.templateId, this.courseId)
       } catch (e) {
         this.$message.error(`复制失败：${e.message}`)
       }
@@ -168,6 +203,7 @@ export default {
 
 
     async loadInstance (templateId, courseId) {
+      console.log(templateId, courseId)
       const {
         data: {data}
       } = await ApiGet('/instance', {
@@ -191,10 +227,20 @@ export default {
 
     async handleDownload (templateName, instanceId) {
       // this.$request.getTemplate(fid, filename)
-      const res = await ApiGet('/instance/download/' + instanceId, {
-        responseType: 'blob'
+      const loading = this.$loading({
+        lock: true,
+        text: '生成文档中，请等待文档生成完毕...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
       })
-      fileDownload(res.data, '生成结果.docx')
+      try {
+        const res = await ApiGet('/instance/download/' + instanceId, {
+          responseType: 'blob'
+        })
+        fileDownload(res.data, '生成结果.docx')
+      } finally {
+        loading.close()
+      }
     },
 
     dateFormat (fmt, date) {
@@ -234,6 +280,8 @@ export default {
   created () {
     const templateId = this.$route.query.templateId
     const courseId = this.$route.query.courseId
+    this.templateId = templateId
+    this.courseId = courseId
     console.log(templateId, courseId)
     this.loadInstance(templateId, courseId)
     this.loadCourse()
@@ -250,5 +298,8 @@ export default {
 
 .excel-download {
   color: #3d95ff;
+}
+.copy-dialog-info {
+  z-index: 3000 !important;
 }
 </style>
