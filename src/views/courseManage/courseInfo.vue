@@ -8,6 +8,11 @@
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="courseName" label="课程名"></el-table-column>
         <el-table-column prop="courseNum" label="课程代号"></el-table-column>
+        <el-table-column prop="courseNum" label="课程性质">
+          <template slot-scope="scope">
+            {{scope.row.courseNature.name}}
+          </template>
+        </el-table-column>
         <el-table-column prop="courseNum" label="学分">
           <template slot-scope="scope">
             {{scope.row.credit}} 学分
@@ -27,7 +32,7 @@
               :active-value="1"
               :inactive-value="0"
               @change="changeCourseState($event,scope.row.courseId)"
-              inactive-text="未开课">
+              inactive-text="停课">
             </el-switch>
           </template>
         </el-table-column>
@@ -36,7 +41,7 @@
             <el-button
               size="mini"
               @click="handleQueryInstance(scope.row.courseName, scope.row.courseId)"
-            >查看实例
+            >查看教学文档
             </el-button>
 
           </template>
