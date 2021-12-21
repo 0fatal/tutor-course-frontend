@@ -34,20 +34,28 @@ error => {
 axios.interceptors.response.use(
   response => {
     NProgress.done()
-    if (response.data.code === 11000) {
-      Cookies.set('access_token', response.data.message, { expires: 1 / 12 })
-      return Promise.resolve()
-    } else if (response.data.code === 10000) { // 约定报错信息
-      Message({
-        message: response.data.message,
-        type: 'warning'
-      })
-      return Promise.reject(response)
-    } else {
-      return Promise.resolve(response)
+    if (response && response.data && response.data.code) {
+      if (response.data.code === 11000) {
+        Cookies.set('access_token', response.data.message, { expires: 1 / 12 })
+        return Promise.resolve()
+      } else if (response.data.code === 10000) { // 约定报错信息
+        Message({
+          message: response.data.message,
+          type: 'warning'
+        })
+        return Promise.reject(response)
+      } else if (response.data.code !== 0) {
+        return Promise.reject(new Error(response.data.msg))
+      }
     }
+    return Promise.resolve(response)
   },
   error => {
+    NProgress.done()
+    Message({
+      message: `${error.response.data.message}`,
+      type: 'error'
+    })
     if (error.response.status === 404) {
       Message({
         message: '请求地址出错',
