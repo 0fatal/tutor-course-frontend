@@ -74,7 +74,7 @@
             </el-button>
             <el-button
               size="mini"
-              @click="openCopyDialog(scope.row.course.courseId)"
+              @click="openCopyDialog(scope.row.course.courseId,scope.row.id)"
             >复制
             </el-button>
             <el-button
@@ -114,6 +114,7 @@ export default {
       copyDialogVisible: false,
       courses: [],
       selectCopyCourseId: '',
+      selectCopyInstanceId: '',
       copyNewInstanceName: '',
       targetCopyCourseId: ''
     }
@@ -165,7 +166,8 @@ export default {
       }
     },
 
-    async openCopyDialog (courseId) {
+    async openCopyDialog (courseId, instanceId) {
+      this.selectCopyInstanceId = instanceId
       this.selectCopyCourseId = courseId
       this.copyDialogVisible = true
       this.$notify({
@@ -183,7 +185,7 @@ export default {
         await this.$confirm('请输入新实例名称')
         return
       }
-      const instanceId = this.instanceList[0].id
+      const instanceId = this.selectCopyInstanceId
       try {
         await ApiPost('/instance/copy', {
           instanceId,
