@@ -7,11 +7,23 @@
       </template>
       <el-table border :data="instanceList" style="width: 100%">
         <el-table-column type="index"></el-table-column>
-        <el-table-column prop="id" width="300" label="实例编号">
-        </el-table-column>
-        <el-table-column prop="templateName" label="模板文件名"></el-table-column>
-        <el-table-column prop="courseName" label="课程名"></el-table-column>
         <el-table-column prop="name" label="实例名称"></el-table-column>
+        <el-table-column prop="" label="模板文件名">
+          <template slot-scope="scope">
+            {{ scope.row.template.templateName }}
+          </template>
+        </el-table-column>
+        <el-table-column label="课程名">
+          <template slot-scope="scope">
+            {{ scope.row.course.courseName }}
+          </template>
+        </el-table-column>
+        <el-table-column label="成绩册">
+          <template slot-scope="scope">
+            <div v-if="scope.row.excel" class="excel-download" @click="handleDownloadExcel(scope.row.excel.id,scope.row.excel.name)">{{ scope.row.excel.name}}</div>
+            <span v-else>未关联</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="updateAt" label="更新日期" width="150">
           <template slot-scope="scope">
             {{ dateFormat('YYYY-mm-dd HH:MM', new Date(scope.row.updateAt)) }}
@@ -67,6 +79,15 @@ export default {
     }
   },
   methods: {
+    async handleDownloadExcel (excelId, excelName) {
+      // this.$request.getTemplate(fid, filename)
+      const res = await ApiGet('/instance/download/' + excelId, {
+        responseType: 'blob'
+      })
+      console.log(res.data.filename)
+      fileDownload(res.data, `${excelName.substr(0, excelName.lastIndexOf('.'))}.docx`)
+    },
+
     async handleDelete (templateName, instanceId) {
       try {
         const confirm = await this.$confirm(`确定删除实例[${instanceId}]?`)
@@ -171,4 +192,14 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.excel-download:hover {
+  text-decoration: underline;
+  color: red;
+  cursor: pointer;
+}
+
+.excel-download {
+  color: #3d95ff;
+}
+</style>
