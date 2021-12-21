@@ -14,6 +14,30 @@
         <el-form-item label="实例名称">
           <el-input v-model="instanceName"/>
         </el-form-item>
+        <el-form-item label="选择课程">
+          <el-select v-model="courseId" placeholder="请选择" @change="handleCourseChange">
+            <el-option
+              v-for="item in courses"
+              :key="item.courseId"
+              :label="item.courseName"
+              :value="item.courseId">
+              <span style="float: left">{{ item.courseName }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.courseNum }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择成绩册">
+          <el-select v-model="excelId" placeholder="请选择" @change="handleExcelChange">
+            <el-option
+              v-for="item in excels"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+              <span style="float: left">{{ item.name }}</span>
+<!--              <span style="float: right; color: #8492a6; font-size: 13px">{{ item.courseNum }}</span>-->
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item
           v-for="(k, index) in Object.keys(tags)"
           :key="index"
@@ -68,40 +92,48 @@
 <script>
 import {ApiGet, ApiPatch, ApiPost} from '../../api/api'
 
+// TODO 选择course自动请求加载课程信息
+// TODO 课程的绑定，要求删除绑定
 export default {
   data () {
     return {
-      // template: {
-      //   tags: {}
-      // },
-      // instance: '',
-      // course: {
-      //   courseId: ''
-      // }
       templateId: '',
       instanceId: '',
+      excelId: '',
+      courses: [],
       tags: {},
-      courseId: {},
-      instanceName: ''
+      courseId: '',
+      instanceName: '',
+      excels: []
     }
   },
   async created () {
-    const {templateId, instanceId, courseId} = this.$route.query
+    await this.loadCourse()
+    await this.loadExcels()
+
+    const {templateId, instanceId} = this.$route.query
     this.templateId = templateId
     this.instanceId = instanceId
-    this.courseId = courseId
 
-
-    templateId && await this.loadTemplate(templateId)
+    templateId && await this.loadTemplate(templateId, this.courseId)
     instanceId && await this.loadInstance(instanceId)
   },
   methods: {
-    async loadTemplate (templateId) {
+    async handleCourseChange (courseId) {
+      console.log(courseId)
+      await this.loadTemplate(this.templateId, courseId)
+    },
+
+    async handleExcelChange (excelId) {
+
+    },
+    async loadTemplate (templateId, courseId) {
       const {
         data: {data}
       } = await ApiGet('/template/tags', {
         params: {
-          templateId
+          templateId,
+          courseId
         }
       })
 
@@ -113,9 +145,11 @@ export default {
         if (this.$route.query.instanceId) {
           await ApiPatch('/instance', {
             templateId: this.templateId,
+            courseId: this.courseId,
             name: this.instanceName,
             id: this.instanceId,
-            tags: this.tags
+            tags: this.tags,
+            excelId: this.excelId === '' ? undefined : this.excelId
           })
           this.$message.success(this.$route.query.instanceId ? '保存成功' : '生成成功')
           this.$router.go(-1)
@@ -140,17 +174,26 @@ export default {
     async loadInstance (instanceId) {
       const {data: {data}} = await ApiGet(`/instance/${instanceId}`)
       this.instanceName = data.name
+      this.courseId = data.courseId
+      this.excelId = data.excelId
       this.tags = JSON.parse(data.tags)
     },
 
-    renderDoc () {
-      this.$request.renderTemplate(this.fid, this.tags)
+    async loadExcels () {
+      const {data: {data}} = await ApiGet('/instance/excel')
+      this.excels = data
     },
+
 
     addTabPane (tagName) {
       const t = JSON.parse(JSON.stringify(this.tags[tagName][0]))
       console.log(t)
       this.tags[tagName].push(t)
+    },
+
+    async loadCourse () {
+      const {data: {data}} = await ApiGet('/course')
+      this.courses = data
     },
 
     getDate () {
