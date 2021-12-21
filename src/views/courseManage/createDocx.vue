@@ -15,7 +15,7 @@
           <el-input v-model="instanceName"/>
         </el-form-item>
         <el-form-item label="选择课程">
-          <el-select v-model="courseId" placeholder="请选择" @change="handleCourseChange">
+          <el-select v-model="courseId" placeholder="请选择" @change="handleCourseChange" :disabled="!!$route.query.instanceId">
             <el-option
               v-for="item in courses"
               :key="item.courseId"
@@ -27,7 +27,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择成绩册">
-          <el-select v-model="excelId" placeholder="请选择" @change="handleExcelChange">
+          <el-select v-model="excelId" placeholder="请选择" @change="handleExcelChange" clearable>
             <el-option
               v-for="item in excels"
               :key="item.id"
@@ -145,13 +145,13 @@ export default {
         if (this.$route.query.instanceId) {
           await ApiPatch('/instance', {
             templateId: this.templateId,
-            courseId: this.courseId,
+            // courseId: this.courseId,
             name: this.instanceName,
             id: this.instanceId,
             tags: this.tags,
-            excelId: this.excelId === '' ? undefined : this.excelId
+            excelId: this.excelId === '' ? null : this.excelId
           })
-          this.$message.success(this.$route.query.instanceId ? '保存成功' : '生成成功')
+          this.$message.success('保存成功')
           this.$router.go(-1)
         } else {
           await ApiPost('/instance/new', {
@@ -162,7 +162,7 @@ export default {
             tags: this.tags,
             courseId: this.courseId
           })
-          this.$message.success(this.$route.query.instanceId ? '保存成功' : '生成成功')
+          this.$message.success('生成成功')
           this.$router.go(-1)
         }
       } catch (e) {
