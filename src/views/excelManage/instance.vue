@@ -2,8 +2,7 @@
   <div>
     <el-card>
       <template slot="header">
-        <h1 v-if="!$route.query.templateId">成绩册列表</h1>
-        <el-button v-else size="mini" type="warning" @click="handleNew($route.query.templateId)">上传成绩册</el-button>
+        <h1>成绩册列表</h1>
       </template>
       <el-table border :data="instanceList" style="width: 100%">
         <el-table-column type="index"></el-table-column>
@@ -112,15 +111,6 @@ export default {
       })
       this.instanceList = data
       this.$forceUpdate()
-    },
-
-    async handleNew (templateId) {
-      this.$router.push({
-        name: 'template-instance-edit',
-        query: {
-          templateId
-        }
-      })
     },
 
     async handleDownload (templateName, instanceId) {
