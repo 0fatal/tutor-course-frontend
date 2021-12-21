@@ -13,34 +13,34 @@
                :unique-opened="openTab"
                :collapse-transition="true"
       >
-        <el-submenu :index="1">
+        <el-submenu index="course">
           <template slot="title">
             <span slot="title">课程相关</span>
           </template>
-          <el-menu-item :index="1" route="/course">
+          <el-menu-item index="/course" route="/course">
             课程列表
           </el-menu-item>
-          <el-menu-item :index="2" route="/course/template">
+          <el-menu-item index="/course/template" route="/course/template">
             模板列表
           </el-menu-item>
-          <el-menu-item :index="3" route="/course/template/instance">
+          <el-menu-item index="/course/template/instance" route="/course/template/instance">
             实例列表
           </el-menu-item>
-          <el-submenu :index="4">
+          <el-submenu index="excel">
             <template slot="title">成绩相关</template>
-            <el-menu-item :index="1" route="/excel/template">
+            <el-menu-item index="/excel/template" route="/excel/template">
               模板列表
             </el-menu-item>
-            <el-menu-item :index="2" route="/excel/template/instance">
+            <el-menu-item index="/excel/template/instance" route="/excel/template/instance">
               成绩册
             </el-menu-item>
           </el-submenu>
         </el-submenu>
-        <el-submenu :index="2">
+        <el-submenu index="teacher">
           <template slot="title">
             <span slot="title">教师信息</span>
           </template>
-          <el-menu-item :index="1" route="/info/teacher">
+          <el-menu-item index="/info/teacher" route="/info/teacher">
             教师个人信息
           </el-menu-item>
         </el-submenu>
