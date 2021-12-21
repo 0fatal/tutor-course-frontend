@@ -79,10 +79,17 @@ export default {
   },
   methods: {
     async uploadFiles (e) {
-      console.log(e)
       const fd = new FormData()
       fd.append('file', e.file)
-      await ApiPost('/template/parse', fd)
+      await ApiPost('/template/upload', fd)
+      this.$message({
+        message: '上传成功',
+        type: 'success'
+      })
+      this.uploadDialogShow = false
+      this.templateList = []
+      this.$refs.upload.clearFiles()
+      await this.loadTemplate()
     },
 
     async handleDelete (filename, fid) {
