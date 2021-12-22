@@ -1,5 +1,5 @@
 // const baseURL = 'http://localhost:7002/template'
-const baseURL = ''
+const baseURL = '/template'
 export default (fid) => ({
   getTemplate: baseURL + '/'+fid,
   getTemplateList: baseURL + '/',
