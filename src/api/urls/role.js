@@ -1,9 +1,4 @@
-/**
- * Created by WebStorm.
- * User: nirongxu
- * Date: 2020/4/20
- * Description: 文件描述
- */
+
 export default {
   // 获取角色列表
   getRoleList: '/permissions/getRoleList',

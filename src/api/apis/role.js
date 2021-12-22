@@ -1,10 +1,4 @@
-/* eslint-disable quotes */
-/**
- * Created by WebStorm.
- * User: nirongxu
- * Date: 2020/4/20
- * Description: 文件描述
- */
+
 import axios from "../axios"
 import roleUrls from "../urls/role"
 
