@@ -27,11 +27,6 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleCopy(scope.row.templateName, scope.row.id)"
-            >复制
-            </el-button>
-            <el-button
-              size="mini"
               @click="handleDownload(scope.row.templateName, scope.row.id)"
             >生成文档
             </el-button
@@ -88,17 +83,6 @@ export default {
       } catch (e) {
       }
     },
-
-    async handleCopy (templateName, instanceId) {
-      try {
-        await ApiPost('/instance/copy/' + instanceId)
-        this.$message.success('复制成功')
-        await this.loadInstance(this.templateId, this.courseId)
-      } catch (e) {
-        this.$message.error(`复制失败：${e.message}`)
-      }
-    },
-
 
     async loadInstance (templateId, courseId) {
       const {
