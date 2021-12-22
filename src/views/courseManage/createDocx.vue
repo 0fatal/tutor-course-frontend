@@ -116,7 +116,7 @@ export default {
     this.instanceId = instanceId
 
     instanceId && await this.loadInstance(instanceId)
-    await this.loadTemplate(this.templateId, this.courseId)
+    await this.loadTemplate(this.templateId, this.courseId,!!this.instanceId)
     
   },
 
