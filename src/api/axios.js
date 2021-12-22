@@ -33,11 +33,11 @@ axios.interceptors.response.use(
       } else if (response.data.code !== 0) {
         if (response.data.code === 401000) {
           Message({
-            message: error.response.data.msg,
+            message: response.data.msg,
             type: 'error'
           })
           window.location.href = '/#/login'
-          return Promise.reject(error.response) 
+          return Promise.reject(new Error(response)) 
         }
         return Promise.reject(new Error(response.data.msg))
       }
