@@ -115,8 +115,9 @@ export default {
     this.templateId = templateId
     this.instanceId = instanceId
 
-    templateId && await this.loadTemplate(templateId, this.courseId)
     instanceId && await this.loadInstance(instanceId)
+    await this.loadTemplate(this.templateId, this.courseId)
+    
   },
 
   watch: {
@@ -190,6 +191,7 @@ export default {
       const {data: {data}} = await ApiGet(`/instance/${instanceId}`)
       this.instanceName = data.name
       this.courseId = data.courseId
+      this.templateId = data.templateId
       this.excelId = data.excelId
       this.tags = JSON.parse(data.tags)
     },
