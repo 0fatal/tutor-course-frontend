@@ -2,7 +2,7 @@ import axios from 'axios'
 import NProgress from 'nprogress'
 import { Message } from 'element-ui'
 // axios默认配置
-axios.defaults.timeout = 10000 // 超时时间
+// axios.defaults.timeout = 10000 // 超时时间
 axios.defaults.baseURL = process.env.API_HOST
 axios.defaults.withCredentials = true
 // axios.defaults.withCredentials = true
