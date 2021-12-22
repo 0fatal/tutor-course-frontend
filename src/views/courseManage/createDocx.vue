@@ -159,8 +159,8 @@ export default {
       try {
         if (this.$route.query.instanceId) {
           await ApiPatch('/instance', {
-            templateId: this.templateId,
-            // courseId: this.courseId,
+            // templateId: this.templateId,
+            courseId: this.courseId,
             name: this.instanceName,
             id: this.instanceId,
             tags: this.tags,
