@@ -69,7 +69,7 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit(scope.row.templateName, scope.row.id)"
+              @click="handleEdit(scope.row.name, scope.row.id)"
             >编辑
             </el-button>
             <el-button
@@ -79,14 +79,14 @@
             </el-button>
             <el-button
               size="mini"
-              @click="handleDownload(scope.row.templateName, scope.row.id)"
+              @click="handleDownload(scope.row.name, scope.row.id)"
             >生成文档
             </el-button
             >
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.row.templateName, scope.row.id)"
+              @click="handleDelete(scope.row.name, scope.row.id)"
             >删除
             </el-button
             >
@@ -227,7 +227,7 @@ export default {
       })
     },
 
-    async handleDownload (templateName, instanceId) {
+    async handleDownload (instanceName, instanceId) {
       // this.$request.getTemplate(fid, filename)
       const loading = this.$loading({
         lock: true,
@@ -239,7 +239,7 @@ export default {
         const res = await ApiGet('/instance/download/' + instanceId, {
           responseType: 'blob'
         })
-        fileDownload(res.data, '生成结果.docx')
+        fileDownload(res.data, `${instanceName}.docx`)
       } finally {
         loading.close()
       }

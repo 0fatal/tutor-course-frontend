@@ -46,6 +46,10 @@ axios.interceptors.response.use(
   },
   error => {
     NProgress.done()
+    Message({
+      message: `${error.response.data.msg}`,
+      type: 'error'
+    })
     if (error.response.status === 404) {
       Message({
         message: '请求地址出错',
@@ -60,10 +64,6 @@ axios.interceptors.response.use(
       window.location.href = '/#/login'
       return Promise.reject(error.response) 
     }
-    Message({
-      message: `${error.response.data.msg}`,
-      type: 'error'
-    })
     return Promise.reject(error.response) // 返回接口返回的错误信息
   })
 
