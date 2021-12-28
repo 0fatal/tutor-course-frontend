@@ -30,6 +30,7 @@
     "@grapecity/spread-sheets-vue": "^14.2.5",
     "ali-oss": "^6.15.2",
     "axios": "^0.19.2",
+    "crypto-js": "^4.1.1",
     "docxtemplater": "^3.21.1",
     "echarts": "^4.1.0",
     "element-ui": "^2.13.1",
