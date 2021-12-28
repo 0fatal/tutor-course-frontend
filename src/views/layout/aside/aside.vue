@@ -4,66 +4,46 @@
       <div class="logo-name">
         <p>教学材料生成系统</p>
       </div>
-      <el-menu :default-active="$route.path" class="el-menu-vertical"
-               :collapse="$store.getters.isCollapse"
-               background-color="#03152A"
-               text-color="rgba(255,255,255,.7)"
-               active-text-color="#e6c56c"
-               router
-               :unique-opened="openTab"
-               :collapse-transition="true"
+      <el-menu
+        :default-active="$route.path"
+        class="el-menu-vertical"
+        :collapse="$store.getters.isCollapse"
+        background-color="#03152A"
+        text-color="rgba(255,255,255,.7)"
+        active-text-color="#e6c56c"
+        router
+        :unique-opened="openTab"
+        :collapse-transition="true"
       >
-        <el-submenu index="course">
-          <template slot="title">
-            <span slot="title">课程相关</span>
-          </template>
-          <el-menu-item index="/course" route="/course">
-            课程列表
-          </el-menu-item>
-          <el-menu-item index="/course/template" route="/course/template">
-            模板列表
-          </el-menu-item>
-          <el-menu-item index="/course/template/instance" route="/course/template/instance">
-            实例列表
-          </el-menu-item>
-          <el-submenu index="excel">
-            <template slot="title">成绩相关</template>
-            <el-menu-item index="/excel/template" route="/excel/template">
-              模板列表
-            </el-menu-item>
-            <el-menu-item index="/excel/template/instance" route="/excel/template/instance">
-              成绩册
-            </el-menu-item>
-          </el-submenu>
-        </el-submenu>
-        <el-submenu index="teacher">
-          <template slot="title">
-            <span slot="title">教师信息</span>
-          </template>
-          <el-menu-item index="/info/teacher" route="/info/teacher">
-            教师个人信息
-          </el-menu-item>
-        </el-submenu>
+        <sub-aside
+          v-for="(r, idx) in asideRoutes"
+          :key="idx"
+          :name="r.name"
+          :type="r.type"
+          :children="r.children"
+          :route="r.route"
+        ></sub-aside>
       </el-menu>
     </el-aside>
   </div>
 </template>
 
 <script>
-import menuTree from './menuTree'
+import asideRoutes from './routes'
+import SubAside from './subAside'
 
 export default {
   name: 'asideNav',
   components: {
-    menuTree
+    SubAside
   },
-  data () {
+  data() {
     return {
-      openTab: ''
+      openTab: '',
+      asideRoutes: asideRoutes
     }
   },
-  methods: {
-  }
+  methods: {}
 }
 </script>
 
@@ -97,7 +77,7 @@ $right: right;
   border-right: solid 1px #e6e6e6;
 
   .logo-name {
-    background-color: #03152A !important;
+    background-color: #03152a !important;
     @extend %w100;
     font-weight: 300;
     z-index: 999;
@@ -146,7 +126,7 @@ $right: right;
     }
 
     .el-menu-item.is-active {
-      background-color: #56a9ff !important
+      background-color: #56a9ff !important;
     }
 
     .is-opened > .el-submenu__title > .el-icon-arrow-down {
@@ -155,6 +135,5 @@ $right: right;
       font-size: 18px;
     }
   }
-
 }
 </style>
