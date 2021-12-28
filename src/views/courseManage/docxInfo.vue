@@ -16,7 +16,9 @@
     </el-dialog>
     <el-card>
       <template slot="header">
-        <el-button size="mini" type="warning" @click="() => uploadDialogShow = true" v-if="$isAdmin()">上传模板</el-button>
+        <el-button size="mini" type="warning" @click="() => (uploadDialogShow = true)" v-if="$isAdmin()"
+          >上传模板</el-button
+        >
         <h1 v-else>模板列表</h1>
       </template>
       <el-table border :data="courses" style="width: 100%">
@@ -30,29 +32,17 @@
 
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleInstance(scope.row.templateName, scope.row.tid)"
-            >查看实例
-            </el-button
-            >
-            <el-button
-              size="mini"
-              @click="handleNewInstance(scope.row.templateName, scope.row.tid)"
-            >创建新实例
+            <el-button size="mini" @click="handleInstance(scope.row.templateName, scope.row.tid)">查看实例 </el-button>
+            <el-button size="mini" @click="handleNewInstance(scope.row.templateName, scope.row.tid)"
+              >创建新实例
             </el-button>
-            <el-button
-              size="mini"
-              @click="handleDownload(scope.row.templateName, scope.row.tid)"
-            >下载文档
-            </el-button
-            >
+            <el-button size="mini" @click="handleDownload(scope.row.templateName, scope.row.tid)">下载文档 </el-button>
             <el-button
               size="mini"
               type="danger"
               v-if="$isAdmin()"
               @click="handleDelete(scope.row.templateName, scope.row.tid)"
-            >删除
+              >删除
             </el-button>
           </template>
         </el-table-column>
@@ -67,11 +57,12 @@
 </template>
 
 <script>
-import {ApiGet, ApiPost} from '../../api/api'
+import { ApiGet, ApiPost } from '../../api/api'
+import { dateFormat } from '../../utils/index'
 
 export default {
   name: 'courseInfo',
-  data () {
+  data() {
     return {
       courses: [],
       templateList: [],
@@ -79,7 +70,8 @@ export default {
     }
   },
   methods: {
-    async uploadFiles (e) {
+    dateFormat,
+    async uploadFiles(e) {
       const fd = new FormData()
       fd.append('file', e.file)
       await ApiPost('/template/upload', fd)
@@ -93,7 +85,7 @@ export default {
       await this.loadTemplate()
     },
 
-    async handleDelete (filename, fid) {
+    async handleDelete(filename, fid) {
       try {
         const confirm = await this.$confirm(`确定删除 [${filename}]？`)
         if (confirm) {
@@ -109,20 +101,17 @@ export default {
             this.$error(e.message)
           }
         }
-      } catch (e) {
-      }
+      } catch (e) {}
     },
-    submitUpload () {
+    submitUpload() {
       this.$refs.upload.submit()
     },
-    handleTemplateChange () {
-
-    },
-    handleUploadError (err, file, fileList) {
+    handleTemplateChange() {},
+    handleUploadError(err, file, fileList) {
       console.log(err)
     },
 
-    handleNewInstance (templateName, templateId) {
+    handleNewInstance(templateName, templateId) {
       console.log(templateName, templateId)
       this.$router.push({
         name: 'template-instance-edit',
@@ -132,48 +121,23 @@ export default {
       })
     },
 
-    handleUploadSuccess (response, file, fileList) {
+    handleUploadSuccess(response, file, fileList) {
       console.log(response)
     },
-    async uploadTemplate () {
-    },
-    async loadTemplate () {
+    async uploadTemplate() {},
+    async loadTemplate() {
       const {
-        data: {data}
+        data: { data }
       } = await ApiGet('/template')
       this.courses = data
       this.$forceUpdate()
     },
 
-    handleDownload (filename, fid) {
+    handleDownload(filename, fid) {
       this.$request.getTemplate(fid, filename)
     },
 
-    dateFormat (fmt, date) {
-      console.log(date)
-      let ret
-      const opt = {
-        'Y+': date.getFullYear().toString(), // 年
-        'm+': (date.getMonth() + 1).toString(), // 月
-        'd+': date.getDate().toString(), // 日
-        'H+': date.getHours().toString(), // 时
-        'M+': date.getMinutes().toString(), // 分
-        'S+': date.getSeconds().toString() // 秒
-        // 有其他格式化字符需求可以继续添加，必须转化成字符串
-      }
-      for (let k in opt) {
-        ret = new RegExp('(' + k + ')').exec(fmt)
-        if (ret) {
-          fmt = fmt.replace(
-            ret[1],
-            ret[1].length === 1 ? opt[k] : opt[k].padStart(ret[1].length, '0')
-          )
-        }
-      }
-      return fmt
-    },
-
-    handleInstance (templateName, templateId) {
+    handleInstance(templateName, templateId) {
       this.$router.push({
         name: 'course-template-instance',
         query: {
@@ -183,7 +147,7 @@ export default {
     }
   },
   computed: {},
-  created () {
+  created() {
     this.loadTemplate()
   }
 }
