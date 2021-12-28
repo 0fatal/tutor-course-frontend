@@ -72,8 +72,8 @@ export default {
     return {
       smdl: true,
       loginForm: {
-        staffId: '400401',
-        password: '400401'
+        staffId: '',
+        password: ''
       }
     }
   },
