@@ -15,7 +15,7 @@
           <el-form-item label="注册日期">
             <span>{{ teacherInfo.createAt }}</span>
           </el-form-item>
-          <el-form-item style="padding-top: 1rem; border-top: 0.5px solid rgba(0,0,0,.2)" inline-message>
+          <el-form-item style="padding-top: 1rem; border-top: 0.5px solid rgba(0, 0, 0, 0.2)" inline-message>
             <el-button @click="updateTeacherInfo" type="primary">保存</el-button>
             <el-button @click="loadTeacherInfo">重置</el-button>
           </el-form-item>
@@ -26,43 +26,40 @@
 </template>
 
 <script>
-import {ApiGet, ApiPatch} from '../../api/api'
+import { ApiGet, ApiPatch } from '../../api/api'
 
 export default {
   name: 'teacherInfo',
-  data () {
+  data() {
     return {
-      teacherInfo: {}
+      teacherInfo: {},
     }
   },
   methods: {
-    async loadTeacherInfo () {
-      const {data} = await ApiGet('/teacher/')
+    async loadTeacherInfo() {
+      const { data } = await ApiGet('/teacher/')
       if (data.code === 0) {
         this.$store.dispatch('saveTeacherInfo', data.data)
         this.teacherInfo = data.data
       }
     },
 
-    async updateTeacherInfo () {
-      const {data} = await ApiPatch('/teacher/', {
-        name: this.teacherInfo.name
+    async updateTeacherInfo() {
+      const { data } = await ApiPatch('/teacher/', {
+        name: this.teacherInfo.name,
       })
-
 
       if (data.code === 0) {
         this.$message.success('保存成功')
       } else {
         this.$message.error(data.msg)
       }
-    }
+    },
   },
-  created () {
+  created() {
     this.loadTeacherInfo()
-  }
+  },
 }
 </script>
 
-<style>
-
-</style>
+<style></style>

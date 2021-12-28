@@ -35,6 +35,7 @@
 import langSelect from '../../../components/lang/langSelect'
 import UserInfo from '../../../components/userForm/userInfo'
 import EditPassword from '../../../components/userForm/editPassword'
+import {ApiPost} from '../../../api/api'
 
 export default {
   name: 'Header',
@@ -90,8 +91,7 @@ export default {
       } else if (command === 'editPassword') {
         this.dialogPassVisible = true
       } else if (command === 'logout') {
-        this.$store.dispatch('deleteToken')
-        location.reload()
+        ApiPost('/teacher/logout').finally(() => { location.reload() })
       }
     }
   }
