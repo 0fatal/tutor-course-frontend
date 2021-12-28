@@ -172,9 +172,7 @@ import Login from '@/views/login/'
 import Layout from '@/views/layout/layout'
 import HomeMain from '@/views/index/mainIndex'
 
-
 const NotFound = () => import('@/views/page404')
-
 
 const routes = [
   {
@@ -230,6 +228,16 @@ const routes = [
         path: '/excel/template/instance',
         name: 'excel-template-instance',
         component: () => import('@/views/excelManage/instance')
+      },
+      {
+        path: '/management/user',
+        name: 'management-user',
+        component: () => import('../views/manage/UserManage/')
+      },
+      {
+        path: '/management/course/template',
+        name: 'management-course-template',
+        component: () => import('../views/manage/CourseManage/')
       }
     ]
   },
@@ -248,6 +256,5 @@ Vue.use(Router)
 const router = new Router({
   routes
 })
-
 
 export default router
