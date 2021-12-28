@@ -5,17 +5,36 @@
  * Description: 全局工具方法
  */
 
-import CryptoJS from "crypto-js"
+import CryptoJS from 'crypto-js'
 
-const encryptKey = "WfJTKO9S4eLkrPz2JKrAnzdb"
-const encryptIV = "D076D35C"
+const encryptKey = 'WfJTKO9S4eLkrPz2JKrAnzdb'
+const encryptIV = 'D076D35C'
 
+export const dateFormat = (fmt, date) => {
+  let ret
+  const opt = {
+    'Y+': date.getFullYear().toString(), // 年
+    'm+': (date.getMonth() + 1).toString(), // 月
+    'd+': date.getDate().toString(), // 日
+    'H+': date.getHours().toString(), // 时
+    'M+': date.getMinutes().toString(), // 分
+    'S+': date.getSeconds().toString() // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  }
+  for (let k in opt) {
+    ret = new RegExp('(' + k + ')').exec(fmt)
+    if (ret) {
+      fmt = fmt.replace(ret[1], ret[1].length === 1 ? opt[k] : opt[k].padStart(ret[1].length, '0'))
+    }
+  }
+  return fmt
+}
 // 深度复制
-export function deepClone (obj) {
+export function deepClone(obj) {
   let result = Array.isArray(obj) ? [] : {}
   for (let key in obj) {
     if (obj.hasOwnProperty(key)) {
-      if (typeof obj[key] === "object") {
+      if (typeof obj[key] === 'object') {
         result[key] = deepClone(obj[key])
       } else {
         result[key] = obj[key]
@@ -26,7 +45,7 @@ export function deepClone (obj) {
 }
 
 // 3DES加密
-export function desEncrypt (str, key = encryptKey, iv = encryptIV) {
+export function desEncrypt(str, key = encryptKey, iv = encryptIV) {
   var cryptoKey = CryptoJS.enc.Utf8.parse(key)
   var cryptoIv = CryptoJS.enc.Utf8.parse(iv.substr(0, 8))
   var encodeStr = CryptoJS.TripleDES.encrypt(str, cryptoKey, {
@@ -38,7 +57,7 @@ export function desEncrypt (str, key = encryptKey, iv = encryptIV) {
 }
 
 // 3DES解密
-export function desDecrypt (str, key = encryptKey, iv = encryptIV) {
+export function desDecrypt(str, key = encryptKey, iv = encryptIV) {
   var cryptoKey = CryptoJS.enc.Utf8.parse(key)
   var cryptoIv = CryptoJS.enc.Utf8.parse(iv.substr(0, 8))
   var decryptStr = CryptoJS.TripleDES.decrypt(str, cryptoKey, {
@@ -50,18 +69,81 @@ export function desDecrypt (str, key = encryptKey, iv = encryptIV) {
 }
 
 // 随机生成由字母+数字的字符串
-export function randomWord (randomFlag, min, max) {
+export function randomWord(randomFlag, min, max) {
   // randomFlag: Boolean 是否随机个数
   // min 最少个数
   // max 最大个数
-  var str = ""
+  var str = ''
   var range = min
-  var arr = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+  var arr = [
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h',
+    'i',
+    'j',
+    'k',
+    'l',
+    'm',
+    'n',
+    'o',
+    'p',
+    'q',
+    'r',
+    's',
+    't',
+    'u',
+    'v',
+    'w',
+    'x',
+    'y',
+    'z',
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z'
+  ]
   // 随机产生
   if (randomFlag) {
     range = Math.round(Math.random() * (max - min)) + min
   }
-  var pos = ""
+  var pos = ''
   for (var i = 0; i < range; i++) {
     pos = Math.round(Math.random() * (arr.length - 1))
     str += arr[pos]
@@ -70,8 +152,8 @@ export function randomWord (randomFlag, min, max) {
 }
 
 // 判断数组中是否存在相同值
-export function hasRepeatValue (arr, key = null) {
-  if (key) arr = arr.map(d => d[key])
+export function hasRepeatValue(arr, key = null) {
+  if (key) arr = arr.map((d) => d[key])
   if (arr.length) {
     let nameNum = arr.reduce((pre, cur) => {
       if (cur in pre) {
@@ -81,20 +163,20 @@ export function hasRepeatValue (arr, key = null) {
       }
       return pre
     }, {})
-    return Object.values(nameNum).findIndex(d => d > 1) < 0
+    return Object.values(nameNum).findIndex((d) => d > 1) < 0
   }
   return true
 }
 
 // 获取cookie值
-export function getCookie (name, defaultValue) {
-  const result = new RegExp("(^| )" + name + "=([^;]*)(;|$)")
+export function getCookie(name, defaultValue) {
+  const result = new RegExp('(^| )' + name + '=([^;]*)(;|$)')
   return result[0] === document.cookie.match(result[1]) ? unescape(result[0][2]) : defaultValue
 }
 
 // base64ToFile
-export function base64ToFile (base64Data, tempfilename, contentType) {
-  contentType = contentType || ""
+export function base64ToFile(base64Data, tempfilename, contentType) {
+  contentType = contentType || ''
   var sliceSize = 1024
   var byteCharacters = atob(base64Data)
   var bytesLength = byteCharacters.length
@@ -116,8 +198,8 @@ export function base64ToFile (base64Data, tempfilename, contentType) {
 }
 
 // 将base64转换为文件
-export function dataURLtoFile (dataurl, filename) {
-  var arr = dataurl.split(",")
+export function dataURLtoFile(dataurl, filename) {
+  var arr = dataurl.split(',')
   var mime = arr[0].match(/:(.*?);/)[1]
   var bstr = atob(arr[1])
   var n = bstr.length
@@ -129,16 +211,16 @@ export function dataURLtoFile (dataurl, filename) {
 }
 
 // 将图片转换为Base64
-export function getImgToBase64 (url, callback, outputFormat) {
-  var canvas = document.createElement("canvas")
-  var ctx = canvas.getContext("2d")
+export function getImgToBase64(url, callback, outputFormat) {
+  var canvas = document.createElement('canvas')
+  var ctx = canvas.getContext('2d')
   var img = new Image()
-  img.crossOrigin = "Anonymous"
+  img.crossOrigin = 'Anonymous'
   img.onload = function () {
     canvas.height = img.height
     canvas.width = img.width
     ctx.drawImage(img, 0, 0)
-    var dataURL = canvas.toDataURL(outputFormat || "image/png")
+    var dataURL = canvas.toDataURL(outputFormat || 'image/png')
     callback(dataURL)
     canvas = null
   }
@@ -146,11 +228,11 @@ export function getImgToBase64 (url, callback, outputFormat) {
 }
 
 // 转换级联下拉数据
-export function loopOptions (list, option = {}) {
+export function loopOptions(list, option = {}) {
   option = {
-    value: "id",
-    label: "name",
-    children: "children",
+    value: 'id',
+    label: 'name',
+    children: 'children',
     ...option
   }
   if (list instanceof Array && list.length) {
@@ -167,7 +249,7 @@ export function loopOptions (list, option = {}) {
 }
 
 // 通过Id获取级联数据id数组
-export function getTreeIds (tree, currentId, key = "id") {
+export function getTreeIds(tree, currentId, key = 'id') {
   let parent = {}
   let pid = {}
   const loop = (list, level) => {
@@ -188,28 +270,30 @@ export function getTreeIds (tree, currentId, key = "id") {
   }
   loop(tree, 1)
   let result = []
-  Object.keys(pid).sort((a, b) => a - b).forEach(k => {
-    result.push(pid[k])
-  })
+  Object.keys(pid)
+    .sort((a, b) => a - b)
+    .forEach((k) => {
+      result.push(pid[k])
+    })
   return result
 }
 
 // 秒转换时分秒
-export function transverterMss (result) {
-  var h = Math.floor(result / 3600) < 10 ? "0" + Math.floor(result / 3600) : Math.floor(result / 3600)
-  var m = Math.floor((result / 60 % 60)) < 10 ? "0" + Math.floor((result / 60 % 60)) : Math.floor((result / 60 % 60))
-  var s = Math.floor((result % 60)) < 10 ? "0" + Math.floor((result % 60)) : Math.floor((result % 60))
-  return h + ":" + m + ":" + s
+export function transverterMss(result) {
+  var h = Math.floor(result / 3600) < 10 ? '0' + Math.floor(result / 3600) : Math.floor(result / 3600)
+  var m = Math.floor((result / 60) % 60) < 10 ? '0' + Math.floor((result / 60) % 60) : Math.floor((result / 60) % 60)
+  var s = Math.floor(result % 60) < 10 ? '0' + Math.floor(result % 60) : Math.floor(result % 60)
+  return h + ':' + m + ':' + s
 }
 
 // 获取日期时间戳
-export function getTime (dayNum) {
+export function getTime(dayNum) {
   var myDate = new Date()
-  var lw = new Date(myDate - 1000 * 60 * 60 * 24 * dayNum)// 最后一个数字多少天前的意思
+  var lw = new Date(myDate - 1000 * 60 * 60 * 24 * dayNum) // 最后一个数字多少天前的意思
   var lastY = lw.getFullYear()
   var lastM = lw.getMonth() + 1
   var lastD = lw.getDate()
-  var startdate = lastY + "-" + (lastM < 10 ? "0" + lastM : lastM) + "-" + (lastD < 10 ? "0" + lastD : lastD)
+  var startdate = lastY + '-' + (lastM < 10 ? '0' + lastM : lastM) + '-' + (lastD < 10 ? '0' + lastD : lastD)
   var b = startdate.split(/\D/)
   var date = new Date(b[0], b[1] - 1, b[2])
   var time = date.getTime()
@@ -217,18 +301,18 @@ export function getTime (dayNum) {
 }
 
 // 获取几天之前日期
-export function getData (dayNum) {
+export function getData(dayNum) {
   var myDate = new Date()
-  var lw = new Date(myDate - 1000 * 60 * 60 * 24 * dayNum)// 最后一个数字多少天前的意思
+  var lw = new Date(myDate - 1000 * 60 * 60 * 24 * dayNum) // 最后一个数字多少天前的意思
   var lastY = lw.getFullYear()
   var lastM = lw.getMonth() + 1
   var lastD = lw.getDate()
-  var startdate = lastY + "-" + (lastM < 10 ? "0" + lastM : lastM) + "-" + (lastD < 10 ? "0" + lastD : lastD)
+  var startdate = lastY + '-' + (lastM < 10 ? '0' + lastM : lastM) + '-' + (lastD < 10 ? '0' + lastD : lastD)
   return startdate
 }
 
 // 日期转换时间戳
-export function getNewTime (dayNum) {
+export function getNewTime(dayNum) {
   var b = dayNum.split(/\D/)
   var date = new Date(b[0], b[1] - 1, b[2])
   var time = date.getTime()
