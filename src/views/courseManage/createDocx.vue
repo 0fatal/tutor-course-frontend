@@ -116,8 +116,7 @@ export default {
     this.instanceId = instanceId
 
     instanceId && await this.loadInstance(instanceId)
-    await this.loadTemplate(this.templateId, this.courseId,!!this.instanceId)
-    
+    await this.loadTemplate(this.templateId, this.courseId, !!this.instanceId)
   },
 
   watch: {
@@ -148,7 +147,9 @@ export default {
           courseName: data.courseName,
           courseCode: data.courseCode,
           credit: data.credit,
-          nature: data.nature
+          nature: data.nature,
+          classroom: data.classroom,
+          courseTime: data.courseTime
         }
       } else {
         this.tags = data
