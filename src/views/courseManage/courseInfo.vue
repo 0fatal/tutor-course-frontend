@@ -27,10 +27,13 @@
         <el-form-item label="上课时间" :prop="newCourseForm.classTime">
           <el-input v-model="newCourseForm.classTime"></el-input>
         </el-form-item>
+        <el-form-item label="教学班号" :prop="newCourseForm.classNum">
+          <el-input v-model="newCourseForm.classNum"></el-input>
+        </el-form-item>
         <el-divider></el-divider>
         <el-form-item>
           <el-button type="primary" @click="createCourse">创建课程实例</el-button>
-          <el-button @click="() => newCourseDialogVisible = false">取消</el-button>
+          <el-button @click="() => (newCourseDialogVisible = false)">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -39,85 +42,77 @@
       <h1>编辑课程实例</h1>
       <el-divider></el-divider>
       <el-form label-width="100px" label-position="left">
-        <el-form-item label="开始学年" :prop="newCourseForm.beginYear">
+        <el-form-item label="开始学年" :prop="editCourseForm.beginYear">
           <el-input v-model="editCourseForm.beginYear"></el-input>
         </el-form-item>
-        <el-form-item label="结束学年" :prop="newCourseForm.endYear">
+        <el-form-item label="结束学年" :prop="editCourseForm.endYear">
           <el-input v-model="editCourseForm.endYear"></el-input>
         </el-form-item>
-        <el-form-item label="开课学期" :prop="newCourseForm.semester">
+        <el-form-item label="开课学期" :prop="editCourseForm.semester">
           <el-input v-model="editCourseForm.semester"></el-input>
         </el-form-item>
-        <el-form-item label="上课教室" :prop="newCourseForm.classroom">
+        <el-form-item label="上课教室" :prop="editCourseForm.classroom">
           <el-input v-model="editCourseForm.classroom"></el-input>
         </el-form-item>
-        <el-form-item label="上课时间" :prop="newCourseForm.classTime">
+        <el-form-item label="上课时间" :prop="editCourseForm.classTime">
           <el-input v-model="editCourseForm.classTime"></el-input>
+        </el-form-item>
+        <el-form-item label="教学班号" :prop="editCourseForm.classNum">
+          <el-input v-model="editCourseForm.classNum"></el-input>
         </el-form-item>
         <el-divider></el-divider>
         <el-form-item>
           <el-button type="primary" @click="modifyCourse">保存编辑</el-button>
-          <el-button @click="() => editCourseDialogVisible = false">取消</el-button>
+          <el-button @click="() => (editCourseDialogVisible = false)">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
     <el-card>
       <template slot="header">
-        <el-button type="warning" size="mini" @click="() => newCourseDialogVisible = true">创建课程实例</el-button>
+        <el-button type="warning" size="mini" @click="() => (newCourseDialogVisible = true)">创建课程实例</el-button>
       </template>
       <el-table border :data="courses" style="width: 100%">
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="courseName" label="课程名" width="120"></el-table-column>
         <el-table-column prop="courseCode" label="课程代号" width="120"></el-table-column>
-        <el-table-column prop="courseNature" label="课程性质" width="120"></el-table-column>
+        <el-table-column prop="classNum" label=教学班号" width="100"></el-table-column>
         <el-table-column prop="courseNum" label="学分" width="70">
-          <template slot-scope="scope">
-            {{ scope.row.credit }} 学分
-          </template>
+          <template slot-scope="scope"> {{ scope.row.credit }} 学分 </template>
         </el-table-column>
         <el-table-column label="开课时间">
           <template slot-scope="scope">
             <span>{{ `${scope.row.beginYear}-${scope.row.endYear} 第${scope.row.semester}学期` }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="教室" prop="classroom">
-        </el-table-column>
+        <el-table-column label="教室" prop="classroom"> </el-table-column>
         <el-table-column label="上课时间" prop="classTime"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleQueryInstance(scope.row.courseName, scope.row.courseId)"
-            >教学文档
+            <el-button size="mini" @click="handleQueryInstance(scope.row.courseName, scope.row.courseId)"
+              >教学文档
             </el-button>
-            <el-button
-              size="mini"
-              @click="handleEditInstance(scope.row.courseName, scope.row.courseId)"
-              type="primary"
-            >编辑
+            <el-button size="mini" @click="handleEditInstance(scope.row.courseName, scope.row.courseId)" type="primary"
+              >编辑
             </el-button>
-            <el-popconfirm title="确定要删除吗？" @onConfirm="handleDeleteInstance(scope.row.courseName, scope.row.courseId)">
-              <el-button
-                slot="reference"
-                size="mini"
-                type="danger"
-              >删除
-              </el-button>
+            <el-popconfirm
+              title="确定要删除吗？"
+              @onConfirm="handleDeleteInstance(scope.row.courseName, scope.row.courseId)"
+            >
+              <el-button slot="reference" size="mini" type="danger">删除 </el-button>
             </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
   </div>
-
 </template>
 
 <script>
-import {ApiDelete, ApiGet, ApiPatch, ApiPost} from '../../api/api'
+import { ApiDelete, ApiGet, ApiPatch, ApiPost } from '../../api/api'
 
 export default {
   name: 'courseInfo',
-  data () {
+  data() {
     return {
       courses: [],
       newCourseForm: {
@@ -126,7 +121,8 @@ export default {
         endYear: null,
         classroom: '',
         classTime: '',
-        semester: null
+        semester: null,
+        classNum: null
       },
       editCourseForm: {
         beginYear: null,
@@ -134,7 +130,8 @@ export default {
         classroom: '',
         classTime: '',
         semester: null,
-        courseId: ''
+        courseId: '',
+        classNum: null
       },
       newCourseDialogVisible: false,
       editCourseDialogVisible: false,
@@ -142,7 +139,7 @@ export default {
     }
   },
   methods: {
-    async modifyCourse () {
+    async modifyCourse() {
       try {
         await ApiPatch('/course', this.editCourseForm)
         this.$message({
@@ -158,7 +155,7 @@ export default {
         })
       }
     },
-    async createCourse () {
+    async createCourse() {
       try {
         await ApiPost('/course', this.newCourseForm)
         // 创建成功，提示并关闭窗口
@@ -173,15 +170,17 @@ export default {
         this.$message.error(`创建失败,原因：${e.message}`)
       }
     },
-    async loadCourses () {
-      const {data} = await ApiGet('/course/')
+    async loadCourses() {
+      const { data } = await ApiGet('/course/')
       console.log(data)
       this.courses = data.data
       this.$forceUpdate()
     },
 
-    async handleEditInstance (courseName, courseId) {
-      const {data: {data: res}} = await ApiGet(`/course/${courseId}`)
+    async handleEditInstance(courseName, courseId) {
+      const {
+        data: { data: res }
+      } = await ApiGet(`/course/${courseId}`)
       this.editCourseForm = {
         beginYear: res.beginYear,
         endYear: res.endYear,
@@ -193,7 +192,7 @@ export default {
       this.editCourseDialogVisible = true
     },
 
-    async handleDeleteInstance (courseName, courseId) {
+    async handleDeleteInstance(courseName, courseId) {
       try {
         await ApiDelete(`/course/${courseId}`)
         this.$message({
@@ -207,14 +206,14 @@ export default {
       }
     },
 
-    async loadCourseTemplate () {
-      const {data} = await ApiGet('/course_template')
+    async loadCourseTemplate() {
+      const { data } = await ApiGet('/course_template')
       console.log('course-template', data.data)
       this.templateCourse = data.data
       console.log(this.templateCourse)
     },
 
-    handleQueryTemplate (courseName, courseId) {
+    handleQueryTemplate(courseName, courseId) {
       this.$router.push({
         name: 'course-template',
         query: {
@@ -223,7 +222,7 @@ export default {
       })
     },
 
-    changeCourseState (courseState, courseId) {
+    changeCourseState(courseState, courseId) {
       console.log('course-state-change', courseState, courseId)
       ApiPatch('/course/state', {
         courseId: courseId,
@@ -231,7 +230,7 @@ export default {
       })
     },
 
-    handleQueryInstance (courseName, courseId) {
+    handleQueryInstance(courseName, courseId) {
       this.$router.push({
         name: 'course-template-instance',
         query: {
@@ -240,7 +239,7 @@ export default {
       })
     }
   },
-  async created () {
+  async created() {
     await this.loadCourseTemplate()
     await this.loadCourses()
   }
