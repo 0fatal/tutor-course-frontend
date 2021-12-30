@@ -6,7 +6,12 @@
       <el-form label-width="100px" label-position="left">
         <el-form-item label="选择课程模板">
           <el-select v-model="newCourseForm.courseTemplateId" placeholder="请选择">
-            <el-option v-for="v in templateCourse" :key="v.courseTemplateId" :value="v.courseTemplateId">
+            <el-option
+              v-for="v in templateCourse"
+              :key="v.courseTemplateId"
+              :value="v.courseTemplateId"
+              :label="v.courseName"
+            >
               <span style="float: left">{{ v.courseName }}</span>
               <span style="float: right; color: #8492a6; font-size: 13px">{{ v.courseCode }}</span>
             </el-option>
@@ -75,7 +80,7 @@
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="courseName" label="课程名" width="120"></el-table-column>
         <el-table-column prop="courseCode" label="课程代号" width="120"></el-table-column>
-        <el-table-column prop="classNum" label=教学班号" width="100"></el-table-column>
+        <el-table-column prop="classNum" label="教学班号" width="100"></el-table-column>
         <el-table-column prop="courseNum" label="学分" width="70">
           <template slot-scope="scope"> {{ scope.row.credit }} 学分 </template>
         </el-table-column>
@@ -96,7 +101,7 @@
             </el-button>
             <el-popconfirm
               title="确定要删除吗？"
-              @onConfirm="handleDeleteInstance(scope.row.courseName, scope.row.courseId)"
+              @confirm="handleDeleteInstance(scope.row.courseName, scope.row.courseId)"
             >
               <el-button slot="reference" size="mini" type="danger">删除 </el-button>
             </el-popconfirm>
@@ -173,6 +178,7 @@ export default {
     async loadCourses() {
       const { data } = await ApiGet('/course/')
       console.log(data)
+
       this.courses = data.data
       this.$forceUpdate()
     },
@@ -182,12 +188,13 @@ export default {
         data: { data: res }
       } = await ApiGet(`/course/${courseId}`)
       this.editCourseForm = {
-        beginYear: res.beginYear,
-        endYear: res.endYear,
-        classroom: res.classroom,
-        classTime: res.classTime,
-        courseId: courseId,
-        semester: res.semester
+        beginYear: res.beginYear + '',
+        endYear: res.endYear + '',
+        classroom: res.classroom + '',
+        classTime: res.classTime + '',
+        courseId: courseId + '',
+        semester: res.semester + '',
+        classNum: res.classNum + ''
       }
       this.editCourseDialogVisible = true
     },

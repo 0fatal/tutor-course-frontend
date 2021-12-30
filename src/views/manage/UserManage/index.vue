@@ -11,7 +11,7 @@
         <el-form-item label="登录密码"> <el-input v-model="teacherInfo.password"></el-input></el-form-item>
         <el-divider></el-divider>
         <el-form-item>
-          <el-popconfirm title="确定提交吗？" @onConfirm="handleAddOrEditTeacher"
+          <el-popconfirm title="确定提交吗？" @confirm="handleAddOrEditTeacher"
             ><el-button type="primary" slot="reference">提交</el-button></el-popconfirm
           >
           <el-button @click="teacherDialogVisible = false">取消</el-button>
@@ -64,7 +64,7 @@
             ></el-button>
             <el-popconfirm
               title="确定要删除账号吗，所有的关于该账号的数据都会删除？"
-              @onComfirm="deleteTeacher(scope.row.staffId)"
+              @confirm="deleteTeacher(scope.row.staffId)"
             >
               <el-button type="danger" size="mini" slot="reference" icon="el-icon-delete" circle></el-button>
             </el-popconfirm>
@@ -112,7 +112,7 @@ export default {
     async handleAddOrEditTeacher() {
       try {
         if (this.isEdit) {
-          await ApiPatch('/teacher', this.teacherInfo)
+          await ApiPatch('/teacher/info', this.teacherInfo)
         } else {
           await ApiPost('/teacher/registry', this.teacherInfo)
         }

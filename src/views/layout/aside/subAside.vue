@@ -34,7 +34,9 @@ export default {
       type: String
     }
   },
-  data() {},
+  data() {
+    return {}
+  },
   methods: {
     test() {
       console.log(1111)

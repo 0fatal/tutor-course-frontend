@@ -9,7 +9,7 @@
         <el-form-item label="课程代号"> <el-input v-model="courseTemplateForm.courseCode"></el-input></el-form-item>
         <el-divider></el-divider>
         <el-form-item>
-          <el-popconfirm title="确定提交吗？" @onConfirm="handleAddOrEditCourse">
+          <el-popconfirm title="确定提交吗？" @confirm="handleAddOrEditCourse">
             <el-button type="primary" slot="reference">提交</el-button>
           </el-popconfirm>
           <el-button @click="courseDialogVisible = false">取消</el-button>
@@ -60,7 +60,7 @@
             ></el-button>
             <el-popconfirm
               title="确定要删除该课程模板吗，会连带删除所有老师一切与该课程有关的数据？"
-              @onComfirm="deleteCourseTemplate(scope.row.courseTemplateId)"
+              @confirm="deleteCourseTemplate(scope.row.courseTemplateId)"
             >
               <el-button type="danger" size="mini" slot="reference" icon="el-icon-delete" circle></el-button>
             </el-popconfirm>
@@ -156,7 +156,7 @@ export default {
       }
     },
     async loadCourseTemplate() {
-      const { data } = await ApiGet('/course_template')
+      const { data } = await ApiGet('/course_template?m=1')
       this.templateCourse = data.data
       this.$forceUpdate()
     }
