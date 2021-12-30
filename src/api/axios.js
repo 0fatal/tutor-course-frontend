@@ -37,7 +37,7 @@ axios.interceptors.response.use(
             type: 'error'
           })
           window.location.href = '/#/login'
-          return Promise.reject(new Error(response)) 
+          return Promise.reject(new Error(response))
         }
         return Promise.reject(new Error(response.data.msg))
       }
@@ -55,16 +55,16 @@ axios.interceptors.response.use(
         message: '请求地址出错',
         type: 'error'
       })
-      return Promise.reject(error.response) 
+      return Promise.reject(new Error(error.response.data.msg))
     } else if (error.response.status === 401 || error.response.data.code === 401000) {
       Message({
         message: error.response.data.msg,
         type: 'error'
       })
       window.location.href = '/#/login'
-      return Promise.reject(error.response) 
+      return Promise.reject(new Error(error.response.data.msg))
     }
-    return Promise.reject(error.response) // 返回接口返回的错误信息
+    return Promise.reject(new Error(error.response.data.msg)) // 返回接口返回的错误信息
   })
 
 
