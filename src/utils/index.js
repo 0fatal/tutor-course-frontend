@@ -1,10 +1,3 @@
-/**
- * Created by WebStorm.
- * User: nirongxu
- * Date: 2020/4/15
- * Description: 全局工具方法
- */
-
 import CryptoJS from 'crypto-js'
 
 const encryptKey = 'WfJTKO9S4eLkrPz2JKrAnzdb'

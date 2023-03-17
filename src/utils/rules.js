@@ -1,10 +1,3 @@
-/**
- * Created by WebStorm.
- * User: nirongxu
- * Date: 2020/4/15
- * Description: 验证规则
- */
-
 export default {
   // 必选
   requiredSelect: (mes = '此项必选', trigger = ['blur', 'change']) => {
